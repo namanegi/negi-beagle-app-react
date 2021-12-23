@@ -2,6 +2,39 @@
   text-align: center;
 }
 
+#header {
+  position: fixed;
+  background-color: aqua;
+  top: 0%;
+  width: 100%;
+  height: 3em;
+}
+
+#main {
+  width: 75em;
+  margin: 3em auto;
+}
+
+.btndiv {
+	display: inline-block;
+	padding: 5px 10px;
+	color: #FFFFFF;
+	background: #4169e1;
+	margin: 5px auto;
+	cursor: pointer;
+}
+.abox {
+  display: inline-block;
+  width: 83.33%;
+  padding: 10px 0;
+  text-align: center;
+  margin: 5px 0;
+  font-size: 0.9em;
+  color: seashell;
+  text-decoration: none;
+  background-color: rgba(38,45,123);
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

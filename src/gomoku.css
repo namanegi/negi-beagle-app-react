@@ -1,0 +1,64 @@
+#board {
+  font-size: 0;
+  margin: auto;
+}
+
+.cell {
+  margin: 0;
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  border: 1px black solid;
+  background-color: burlywood;
+}
+.chess {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 8px;
+  border-radius: 50%;
+}
+
+.white {
+  background-color: azure;
+}
+
+.black {
+  background-color: black;
+}
+
+#result_back {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+#result {
+  position: fixed;
+  height: 20%;
+  width: 40%;
+  left: 30%;
+  top: 40%;
+  background-color: azure;
+}
+
+#result_text {
+  display: inline-block;
+  height: 20%;
+  width: 50%;
+  margin: 20px 25%;
+  text-align: center;
+}
+
+#rt_but {
+  display: block;
+  margin: 5% 40%;
+  width: 20%;
+}
+
+.not_end {
+  display: none;
+}

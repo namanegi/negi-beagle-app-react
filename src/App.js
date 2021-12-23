@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.css'
 
-function App() {
+import { useState } from 'react'
+import { useCookies } from 'react-cookie'
+import axios from 'axios'
+
+import Header from './Header'
+import MainRouter from './MainRouter'
+
+const App = () =>  {
+  const [cookies, setCookies] = useCookies(["username", "token"])
+  const [is_login, setIsLogin] = useState(false)
+  const api_url = process.env.REACT_APP_API_URL
+  const check_url = api_url + 'check_online'
+  const json_data = {
+    usr: cookies.username,
+    token: cookies.token
+  }
+  axios({
+    method: 'POST',
+    url: check_url,
+    data: json_data,
+    validateStatus: (status) => status <= 400
+  }).then(response => {
+    if (response.data.status === 'OK') {
+      setIsLogin(true)
+    } else {
+      setIsLogin(false)
+    }
+  })
+  const logoutFunc = () => {
+    const logout_url = api_url + 'logout'
+    axios({
+      method: 'POST',
+      url: logout_url,
+      data: json_data,
+      validateStatus: (status) => status <= 400
+    }).then(response => {
+      if (response.data.status === 'OK') {
+        console.log('LogoutSuccess')
+      } else {
+        console.log(response.data)
+      }
+    })
+    setCookies("username", "")
+    setCookies("token", "")
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <Header is_login={is_login} logoutEvent={logoutFunc} />
+      <MainRouter is_login={is_login} />
+    </>
+  )
 }
 
-export default App;
+export default App
