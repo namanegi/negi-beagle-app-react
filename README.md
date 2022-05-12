@@ -4,8 +4,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
-In the project directory, you can run:
-
+In the project directory, firstly run:
+### `npm i`
+This command will install all the requested package for this project.
+(You may need to delete package-lock.json first if ERR log comes out.)
+And then, 
 ### `npm start`
 
 Runs the app in the development mode.\
