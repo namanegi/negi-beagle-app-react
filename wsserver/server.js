@@ -20,30 +20,34 @@ wsServer.on('connection', server => {
     console.log('message received')
     parsedMessage = JSON.parse(message)
     console.log(server.id, parsedMessage)
+    get_room_by_id = getRoomById(parsedMessage.roomid)
     
-    if (parsedMessage.type === 'entry') {
-      server.username = parsedMessage.username
-      server.room = parsedMessage.roomid
-      get_room_by_id = room_list.filter((room) => room.roomid === parsedMessage.roomid)
-      if (get_room_by_id.length === 0) {
-        let new_room = new Room(parsedMessage.roomid)
-        new_room.join(parsedMessage.username)
-        room_list.push(new_room)
-      } else {
-        get_room_by_id[0].join(parsedMessage.username)
-      }
-    } else if (parsedMessage.type === 'joinGame') {
-      get_room_by_id = room_list.filter((room) => room.roomid === parsedMessage.roomid)
-      get_room_by_id[0].joinGame(parsedMessage.username)
-    } else if (parsedMessage.type === 'playChess') {
-      get_room_by_id = room_list.filter((room) => room.roomid === parsedMessage.roomid)
-      get_room_by_id[0].updateBoard(parsedMessage.x, parsedMessage.y)
-    } else if (parsedMessage.type === 'endGame') {
-      get_room_by_id = room_list.filter((room) => room.roomid === parsedMessage.roomid)
-      get_room_by_id[0].updateRes(parsedMessage.newRes)
-    } else if (parsedMessage.type === 'resetRoom') {
-      get_room_by_id = room_list.filter((room) => room.roomid === parsedMessage.roomid)
-      get_room_by_id[0].resetRoom()
+    switch (parsedMessage.type) {
+      case 'entry':
+        server.username = parsedMessage.username
+        server.room = parsedMessage.roomid
+        if (get_room_by_id.length === 0) {
+          let new_room = new Room(parsedMessage.roomid)
+          new_room.join(parsedMessage.username)
+          room_list.push(new_room)
+        } else {
+          get_room_by_id[0].join(parsedMessage.username)
+        }
+        break
+      case 'joinGame':
+        get_room_by_id[0].joinGame(parsedMessage.username)
+        break
+      case 'playChess':
+        get_room_by_id[0].updateBoard(parsedMessage.x, parsedMessage.y)
+        break
+      case 'endGame':
+        get_room_by_id[0].updateRes(parsedMessage.newRes)
+        break
+      case 'resetRoom':
+        get_room_by_id[0].resetRoom()
+        break
+      default:
+        break
     }
     broadcastRoom(parsedMessage.roomid)
   });
@@ -55,6 +59,8 @@ wsServer.on('connection', server => {
     })
   })
 });
+
+const getRoomById = (roomid) => room_list.filter((room) => room.roomid === parsedMessage.roomid)
 
 const broadcastRoom = (roomid) => {
   target_room = room_list.filter(room => room.roomid === roomid)[0]

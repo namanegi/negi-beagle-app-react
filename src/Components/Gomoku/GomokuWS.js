@@ -46,11 +46,14 @@ const GomokuWSBoard = ({ roomid, username, room, clEvent }) => {
     if (room.status === 'end') {
       setRes(room.result)
     }
+    if (room.status === 'waiting' && res !== '0') {
+      setRes('0')
+    }
   }, [room])
 
   const [cb, setCb] = useState(initBoard)
   const [t, setT] = useState("first")
-  const [res, setRes] = useState(0)
+  const [res, setRes] = useState('0')
   const [pl, setPl] = useState([])
 
   const upTable = () => {

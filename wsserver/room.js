@@ -1,6 +1,7 @@
 class Room {
-  constructor(roomid) {
+  constructor(roomid, roomtype='Gomoku') {
     this.roomid = roomid
+    this.roomtype = roomtype
     this.first = ''
     this.second = ''
     this.playerlist = []
