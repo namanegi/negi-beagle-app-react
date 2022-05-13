@@ -21,7 +21,7 @@ The server will run on port 5001.
 ### 2.2) Back-End
 * Due to the update in 2022/05/13, a User-Management-System is required for this project.
 * Currently, the front-end uses http://localhost:8000 as the ums api server.
-* You can find a suitable api-server in [my another reposit](https://github.com/namanegi/negi-ums-flask).
+* You can find a suitable api-server in [my another reposit](https://github.com/namanegi/negi-ums-fastapi).
   * The Bearer Authoration is used to auth the connection.
   * The token is stored in session storage.
 ### 2.3) Front-End
