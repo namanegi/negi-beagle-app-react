@@ -11,6 +11,8 @@ import GomokuBoard from './GomokuBoard'
 import ResultScreen from './GomokuRes';
 import Button from '../Button';
 
+const wss = 'ws://192.168.1.155:5001'
+
 const Playground = ({ playerlist }) => {
   if (!playerlist) {
     playerlist = []
@@ -153,7 +155,7 @@ const GomokuWSApp = ({ username }) => {
   const [room, setRoom] = useState({})
 
   useEffect(() => {
-    socket.current = new WebSocket('ws://192.168.1.155:5001')
+    socket.current = new WebSocket(wss)
     socket.current.onopen = () => {
       socket.current.send(JSON.stringify({
         type: 'entry',
