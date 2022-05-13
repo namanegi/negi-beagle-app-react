@@ -1,6 +1,6 @@
 import './header.css'
 
-import LoginMenu from "./Components/LoginMenu"
+import LoginMenu from "./LoginMenu"
 
 const Header = ({ is_login, logoutEvent }) => {
   return (

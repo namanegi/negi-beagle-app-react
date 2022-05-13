@@ -1,17 +1,24 @@
-import axios from "axios"
-import { useState } from "react"
-import { useCookies } from "react-cookie"
+import { useEffect, useState } from "react"
 import "./login.css"
-import ErrorMes from './Errormes'
+import ErrorMes from '../Errormes'
+import { postRequest } from "../../Client/api"
+import { Link, Navigate } from "react-router-dom"
+import Session from "../../SessionStorage/Session"
 
-const LoginApp = () => {
-  const api_url = process.env.REACT_APP_API_URL
-
+const LoginApp = ({ is_login }) => {
   const [usr, setUsr] = useState("")
   const [pwd, setPwd] = useState("")
   const [isShow, setShow] = useState(false)
   const [errMes, setError] = useState("")
-  const [cookies, setCookies] = useCookies(["username", "token"])
+  const [redirect, setRedirect] = useState(is_login)
+
+  useEffect(() => {
+    if (is_login) {
+      setRedirect(is_login)
+    }
+  }, [is_login])
+
+  const { setToken } = Session()
 
   const onUsrChange = (event) => {
     setUsr(event.target.value)
@@ -24,26 +31,20 @@ const LoginApp = () => {
     event.preventDefault()
 
     const json_data = {
-      usr,
-      pwd
+      username: usr,
+      password: pwd
     }
-    const post_url = api_url + 'login'
 
-    axios({
-      method: 'POST',
-      url: post_url,
-      data: json_data,
-      validateStatus: (status) => status <= 400
-    }).then(response => {
-        if (response.data.status === "OK") {
-          setCookies("username", usr)
-          setCookies("token", response.data.token)
-          window.location.href = '/'
-          console.log(cookies)
-        } else {
-          setError(response.data.message)
-        }
-      })
+    postRequest('/login', json_data)
+    .then(response => {
+      // console.log(response.data.access_token)
+      setToken(response.data.access_token)
+      window.location = '/'
+    })
+    .catch(error => {
+      console.log(error)
+      setError(error.response.data.detail)
+    })
   }
 
   return (
@@ -93,14 +94,20 @@ const LoginApp = () => {
             <td colSpan="3"><ErrorMes value={errMes} /></td>
           </tr>
           <tr>
-            <td colSpan="3"><a href="/signup" id="tosignup" className="toLink">＞アカウントお持ちしていない方はこちら</a></td>
+            <td colSpan="3"><Link to="/signup" id="tosignup" className="toLink">＞アカウントお持ちしていない方はこちら</Link></td>
           </tr>
           <tr>
-            <td colSpan="3"><a href="/forget" id="toforget" className="toLink">＞パスワードを忘れた方はこちら</a></td>
+            <td colSpan="3"><Link to="/forget" id="toforget" className="toLink">＞パスワードを忘れた方はこちら</Link></td>
           </tr>
         </tbody>
       </table>
     </form>
+    {
+      (redirect) ?
+      <Navigate to='/' />
+      :
+      <></>
+    }
     </div>
   )
 }

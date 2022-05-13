@@ -1,16 +1,23 @@
-import axios from "axios"
-import { useState } from "react"
-import ErrorMes from "./Errormes"
+import { useState, useEffect } from "react"
+import { Navigate } from "react-router-dom"
+
+import { postRequest } from '../../Client/api'
+import ErrorMes from "../Errormes"
 import "./login.css"
 
-const SignupApp = () => {
-  const api_url = process.env.REACT_APP_API_URL
-
+const SignupApp = ({ is_login }) => {
   const [usr, setUsr] = useState("")
   const [pwd, setPwd] = useState("")
   const [chPwd, setChPwd] = useState("")
   const [isShow, setShow] = useState(false)
   const [errMes, setError] = useState("")
+  const [redirect, setRedirect] = useState(is_login)
+
+  useEffect(() => {
+    if (is_login) {
+      setRedirect(is_login)
+    }
+  }, [is_login])
 
   const onUsrChange = (event) => {
     setUsr(event.target.value)
@@ -34,21 +41,17 @@ const SignupApp = () => {
   const signFunc = (event) => {
     event.preventDefault()
     const json_data = {
-      usr,
-      pwd
+      username: usr,
+      password: pwd
     }
-    const post_url = api_url + 'signup'
-    axios({
-      method: 'POST',
-      url: post_url,
-      data: json_data,
-      validateStatus: (status) => status <= 400
-    }).then(response => {
-      if (response.data.status === "OK") {
-        window.location.href = '/login'
-      } else {
-        setError('ユーザー名が既に使用されています')
-      }
+    postRequest('/signup', json_data)
+    .then(response => {
+      // change later
+      window.location.href = '/'
+    })
+    .catch(error => {
+      console.log(234234, error.response.data.detail)
+      setError(error.response.data.detail)
     })
   }
 
@@ -117,6 +120,12 @@ const SignupApp = () => {
         </tbody>
       </table>
     </form>
+    {
+      (redirect) ?
+      <Navigate to='/' />
+      :
+      <></>
+    }
     </div>
   )
 }

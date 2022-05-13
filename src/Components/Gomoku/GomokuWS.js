@@ -147,8 +147,8 @@ const GomokuWSBoard = ({ roomid, username, room, clEvent }) => {
   );
 }
 
-const GomokuWSApp = () => {
-  const { roomid, username } = useParams()
+const GomokuWSApp = ({ username }) => {
+  const { roomid } = useParams()
   const socket = useRef(null)
   const [room, setRoom] = useState({})
 

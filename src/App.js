@@ -1,54 +1,40 @@
 import './App.css'
 
-import { useState } from 'react'
-import { useCookies } from 'react-cookie'
-import axios from 'axios'
+import { useEffect, useState } from 'react'
 
-import Header from './Header'
-import MainRouter from './MainRouter'
+import Header from './Components/Header'
+import MainRouter from './Router/MainRouter'
+import Session from './SessionStorage/Session'
+import { getRequest } from './Client/api'
 
 const App = () =>  {
-  const [cookies, setCookies] = useCookies(["username", "token"])
-  const [is_login, setIsLogin] = useState(false)
-  const api_url = (process.env.REACT_APP_ENV === 'development') ? process.env.REACT_APP_DEV_UMS_API : ''
-  const check_url = api_url + '/user/me'
-  const json_data = {
-    usr: cookies.username,
-    token: cookies.token
-  }
-  axios({
-    method: 'POST',
-    url: check_url,
-    data: json_data,
-    validateStatus: (status) => status <= 400
-  }).then(response => {
-    if (response.data.status === 'OK') {
-      setIsLogin(true)
+  const { token, clearToken } = Session()
+  const [ username, setUsername ] = useState('guest')
+  const [is_login, setLogin] = useState(false)
+
+  useEffect(() => {
+    if (token) {
+      getRequest('/user/me', null, token)
+      .then(res => {
+        // console.log(res.data)
+        setUsername(res.data.username)
+        setLogin(true)
+      })
+      .catch(() => {
+        clearToken()
+        setUsername('guest')
+        setLogin(false)
+      })
     } else {
-      setIsLogin(false)
+      setUsername('guest')
+      setLogin(false)
     }
-  })
-  const logoutFunc = () => {
-    const logout_url = api_url + 'logout'
-    axios({
-      method: 'POST',
-      url: logout_url,
-      data: json_data,
-      validateStatus: (status) => status <= 400
-    }).then(response => {
-      if (response.data.status === 'OK') {
-        console.log('LogoutSuccess')
-      } else {
-        console.log(response.data)
-      }
-    })
-    setCookies("username", "")
-    setCookies("token", "")
-  }
+  }, [token, clearToken])
+
   return (
     <>
-      <Header is_login={is_login} logoutEvent={logoutFunc} />
-      <MainRouter is_login={is_login} username={'guest'} />
+      <Header is_login={is_login} logoutEvent={clearToken} />
+      <MainRouter username={username} is_login={is_login} />
     </>
   )
 }

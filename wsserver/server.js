@@ -55,7 +55,7 @@ wsServer.on('connection', server => {
   server.on('close', () => {
     room_list.forEach(room => {
       room.leave(server.username)
-      broadcastRoom(room.id)
+      broadcastRoom(room.roomid)
     })
   })
 });
@@ -67,7 +67,9 @@ const broadcastRoom = (roomid) => {
   if (target_room) {
     target_room.playerlist.forEach(player => {
       client = findClientByName(player)
-      client.send(JSON.stringify(target_room.to_json()))
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(target_room.to_json()))
+      }
     })
   }
 }
